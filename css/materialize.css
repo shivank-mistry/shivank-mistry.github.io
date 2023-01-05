@@ -644,7 +644,7 @@
 }
 
 .blue {
-  background-color: #2196F3 !important;
+  background-color: #4720B7 !important;
 }
 
 .blue-text {
@@ -2944,7 +2944,8 @@ ul.staggered-list li {
 }
 
 .page-footer {
-  padding-top: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   color: #fff;
   background-color: #ee6e73;
 }
