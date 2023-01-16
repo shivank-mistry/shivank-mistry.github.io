@@ -1,25 +1,66 @@
-<!DOCTYPE html> 
-<html> 
-    <head> 
-        <meta charset="utf-8"> 
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-        <title>Example Student's HCDE 439 Physical Computing Page!</title> 
+        <title>Shivank's HCDE 439 Physical Computing Page!</title>
 
         <link href="style.css" media="screen" rel="stylesheet" type="text/css" />
 
-    </head> 
-    <body> 
+    </head>
+    <body>
 
         <div class="header">
-            <h1>Example Student's Assignment 1!</h1>
+            <h1>Shivank's Assignment 1!</h1>
+            <p>This assignment is for a simple blink program that blinks through 3 LEDS: one red, one blue, and one green.</p>
             <p>
-            <img src="red-panda.jpg" width=400></a>
+            <img src="blinkimage.jpg" width=400></a>
             </p>
             <p>
-            Here is all the documentation for assignment 1!
+              Image of the circuit.
             </p>
+            <p>
+            <img src="blinkgif.gif" width=400></a>
+            </p>
+            <p>
+              GIF of the circuit.
+            </p>
+            <p>
+            <img src="blinkdiagram.jpg" width=400></a>
+            </p>
+            <p>
+              Image of the schematic. I chose 220 Ohm resistors because they allow the Amps to be between 1mA and 30mA. <br>
+              The calculations for the amperage correspond to the colors because there is a different voltage drop for each of the lights.
+            </p>
+            <p>
+              The following is the code snippet for the firmware. that allows the LEDs to blink. I have commented out the justification for each of the lines in the code.
+            </p>
+            <p><code>
+              // Shivank Mistry <br>
+              // HCDE 439 HW1: Blink <br>
+              // This program blinks 3 led lights indefinitely <br>
+
+              void setup() { <br>
+
+                <span class="tab"></span>pinMode(13, OUTPUT); // initializes pin 13 as output <br>
+                <span class="tab"></span>pinMode(12, OUTPUT); // initializes pin 12 as output <br>
+                <span class="tab"></span>pinMode(11, OUTPUT); // initializes pin 11 as output <br>
+
+              } <br>
+
+              // the loop function runs over and over again forever <br>
+              void loop() { <br>
+                <span class="tab"></span>for (int i = 11; i < 14; i++) { // setting up the for loop to run between 11-13 <br>
+                  <span class="tab"></span><span class="tab"></span>digitalWrite(i, HIGH);        // turns on the current pin <br>
+                  <span class="tab"></span><span class="tab"></span>delay(500);                   // wait half a second <br>
+                  <span class="tab"></span><span class="tab"></span>digitalWrite(i, LOW);         // turns off the current pin <br>
+                  <span class="tab"></span><span class="tab"></span>delay(500);                   // wait half a second <br>
+                <span class="tab"></span>} <br>
+              } <br>
+
+            </p></code>
         </div>
-        
+
     </body>
 </html>

@@ -9,6 +9,10 @@ h1,h2,h3,h4 {
   font-family: 'helvetica', 'arial', 'sans';
   }
 
+  .tab {
+      display: inline-block;
+      margin-left: 40px;
+  }
 
 a {
   color: #000;
@@ -68,4 +72,3 @@ a {
   color: #FFF;
   text-decoration: none;
 }
-
