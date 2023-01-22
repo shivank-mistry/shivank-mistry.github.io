@@ -1,25 +1,102 @@
-<!DOCTYPE html> 
-<html> 
-    <head> 
-        <meta charset="utf-8"> 
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-        <title>Example Student's HCDE 439 Physical Computing Page!</title> 
+        <title>Shivank's HCDE 439 Physical Computing Page!</title>
 
         <link href="style.css" media="screen" rel="stylesheet" type="text/css" />
 
-    </head> 
-    <body> 
+    </head>
+    <body>
 
         <div class="header">
-            <h1>Example Student's Assignment 2!</h1>
+            <h1>Shivank's Assignment 2!</h1>
+            <p>for this assignment, I created a system that fades from purple to orange while a button is pressed.</p>
             <p>
-            <img src="red-panda.jpg" width=400></a>
+            <img src="fadeimage.jpg" width=400></a>
             </p>
             <p>
-            Here is all the documentation for assignment 2!
+            Image of the circuit.
             </p>
+            <p>
+            <img src="fadediagram.jpg" width=400></a>
+            </p>
+            <p>
+            Image of the schematic and calculations. I set the LED resistors to 220 Ohms
+            to keep the mA within an acceptable range. I also added a 10K resistor to the button to limit the current
+            that the pin reads. With a 10k resistor, the current is .5mA. This is to avoid floating pins. and have the LOW and HIGH values distinct from each other.
+            </p>
+            <p>This is the code...<code><br>
+              int buttonPin = 2; // initialize button pin <br>
+              int red = 11;      // initialize red pin<br>
+              int green = 10;    // initialize green pin<br>
+              int blue = 9;      // initialize blue pin<br>
+
+              int constrainedVal = 0; // initialize constant to limit analog value<br>
+              int buttonState = 0;    // initialize button state<br>
+<br>
+              void setup() {<br>
+                pinMode(red, OUTPUT);     // define pin as output<br>
+                pinMode(green, OUTPUT);   // define pin as output<br>
+                pinMode(blue, OUTPUT);    // define pin as output<br>
+                pinMode(buttonPin, INPUT);// define button as input<br>
+              }<br>
+
+              // the loop function runs over and over again forever<br>
+              void loop() {<br>
+                buttonState = digitalRead(buttonPin); // reads the button state<br>
+                if (buttonState == HIGH) {            // if the button is on...<br>
+<br>
+                  digitalWrite(blue, HIGH);           // Sets pins as HIGH<br>
+                  digitalWrite(red, HIGH);            // Sets pins as HIGH<br>
+                  digitalWrite(green, LOW);           // Sets pins as HIGH<br>
+<br>
+<br>
+               // --------------- Purple! ---------------- //<br>
+                  for (int i = 0; i < 255; i+=5) {   // loops through 1-255, going up by 5.<br>
+                    constrainedVal = constrain(i, 0, 100);    // sets a constraint value to limit analog to 100<br>
+                    analogWrite(red,constrainedVal);          // writes constrained value to red pin. This is to not overpower the color with red.<br>
+                    analogWrite(blue, i);                     // blue goes up incrementally<br>
+                    analogWrite(green, 0);                    // green is off<br>
+                    delay(5);                                 // 5ms delay<br>
+                  }<br>
+<br>
+                  for (int i = 255; i > 0; i-=5) {           // loops from 255 to 5, going down by 5.<br>
+                    constrainedVal = constrain(i, 0, 100);   // sets a constraint value to limit analog to 100<br>
+                    analogWrite(red, constrainedVal);        // writes constrained value to red pin. This is to not overpower the color with red.<br>
+                    analogWrite(blue,i);                     // blue goes up incrementally by i.<br>
+                    analogWrite(green, 0);                   // green is off<br>
+                    delay(5);                                // 5ms delay<br>
+                  }<br>
+<br>
+               // ---------------- Orange! --------------- //<br>
+                      for (int i = 0; i < 255; i+=5) {    // loops through 1-255, going up by 5.<br>
+                    analogWrite(blue,0);                  // blue is off<br>
+                    analogWrite(red, i);                  // red goes up incrementally by i.<br>
+                    analogWrite(green, i);                // green goes up incrementally by i.<br>
+                    delay(5);                             // 5ms delay<br>
+                  }<br>
+<br>
+                  for (int i = 255; i > 0; i-=5) {        // loops from 255 to 5, going down by 5.<br>
+                    analogWrite(blue, 0);                 // blue is off.<br>
+                    analogWrite(red, i);                  // red goes up incrementally by i.<br>
+                    analogWrite(green, i);                // green goes up incrementally by i.<br><br>
+                    delay(5);                             // 5ms delay<br>
+                  }<br>
+                } else {<br>
+                  digitalWrite(red, LOW);                 // turns red pin off when button is not pressed.<br>
+                  digitalWrite(blue, LOW);                // turns blue pin off when button is not pressed.<br>
+                  digitalWrite(green, LOW);               // turns green pin off when button is not pressed.<br>
+                }<br>
+              }<br>
+            </code></p>
+            <p>This is the fade in practice!!</p>
+            <p>
+            <img src="fadegif.gif" width=400></a>
+            </p>
+
         </div>
-        
     </body>
 </html>
