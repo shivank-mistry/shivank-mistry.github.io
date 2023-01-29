@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+        <title>Shivank's HCDE 439 Physical Computing Page!</title>
+
+        <link href="style.css" media="screen" rel="stylesheet" type="text/css" />
+
+    </head>
+    <body>
+
+        <div class="header">
+            <h1>Shivank's Assignment 3!</h1>
+            <p>For this assignment, I created a circuit that fades between red and green depending on the light level. Green is dark and red is light! During the calibration phase, the LED shines blue.  </p>
+            <p>
+            <img src="ioimage.jpg" width=400></a>
+            </p>
+            <p>
+            Image of the circuit.
+            </p>
+            <p>
+            <img src="iodiagram.jpg" width=400></a>
+            </p>
+            <p>
+            Image of the schematic and calculations. I set the LED resistors to 220 Ohms
+            to keep the mA within an acceptable  of 1mA to 30mA according to the LED datasheet. I also added a 10K resistor to the voltage divider photoresistor
+            schematic to have the voltage divide at an appropriate range. If the resistor was too small, the changes in voltage from dark to light is less
+            noticable because as measured, the photoresistor measures around 1K Ohms in the light and 140K Ohms in the dark. I did calculations for approximate values
+            for max light and max dark.
+
+            </p>
+            <p>This is the code...<code><br>
+              int redPin = 9; // defines red pin as 9<br>
+int greenPin = 10; // defines green as 10<br>
+int bluePin = 11; // defines blue pin as 11<br>
+int analogPin = A0; // defines input pin as A0;<br>
+<br>
+int sensorValue = 0; // initial sensor value<br>
+int outputValue = 0; // initial output value<br>
+int sensorMin = 0; // initial sensor min for calibration<br>
+int sensorMax = 1023; // initial sensor max for calibration<br>
+<br>
+void setup() {<br>
+  pinMode(analogPin, INPUT); // sets input pin<br>
+  pinMode(redPin, OUTPUT); // sets red pin as output<br>
+  pinMode(bluePin, OUTPUT); // sets blue pin as output<br>
+  pinMode(greenPin, OUTPUT); // sets green pin as output<br>
+  Serial.begin(9600); // initializes Serial to read values. <br>
+<br>
+  digitalWrite(bluePin, HIGH); // first turns on the blue lught to signal calibration phase. <br>
+<br>
+    while (millis() < 5000) { // for 5 seconds, do this...<br>
+    sensorValue = analogRead(analogPin); // reads the sensor value (the light source.)<br>
+<br>
+    // record the maximum sensor value<br>
+    if (sensorValue > sensorMax) { // if the current sensor value is greater than the maximum...<br>
+      sensorMax = sensorValue; // set the maximum equal to the current sensor value. <br>
+    }<br>
+
+    // record the minimum sensor value<br>
+    if (sensorValue < sensorMin) { // if the current sensor value is less than the minimum...<br>
+      sensorMin = sensorValue; // set the minimum equal to the current sensor value. <br>
+    }<br>
+  }<br>
+
+  // after calibration, we now have sensor min and max stored in variables. <br>
+<br>
+  digitalWrite(bluePin, LOW); // turns the blue pin off to signal the end of the calibration phase.<br>
+
+}<br>
+<br>
+void loop() {<br>
+  sensorValue = analogRead(analogPin); // reads the current sensor value and stores it. <br>
+  sensorValue = constrain(sensorValue, sensorMin, sensorMax); // if the sensor value is less than the min, <br>
+                                                              //  or greater than the max, it returns the existing Min and Max stored from calibration. <br>
+  sensorValue = map(sensorValue, sensorMin, sensorMax, 0, 255); // maps the sensor value between 0 and 255 given the defined Min and Max. <br>
+  Serial.println(sensorValue); // prints out the sensor value<br>
+  analogWrite(greenPin, 255 - sensorValue); // if the cell is in dark, it is more green. <br>
+  analogWrite(redPin, sensorValue); // if the cell is in the light, it is more red. <br>
+  delay(5); // Wait for 5 millisecond(s)<br>
+
+}<br>
+
+            </p>
+            <p>This is the I/O in practice!!</p>
+            <p>
+            <img src="iogif.gif" width=400></a>
+            </p>
+
+        </div>
+    </body>
+</html>
