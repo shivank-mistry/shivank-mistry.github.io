@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+        <title>Shivank's HCDE 439 Physical Computing Page!</title>
+
+        <link href="style.css" media="screen" rel="stylesheet" type="text/css" />
+
+    </head>
+    <body>
+
+        <div class="header">
+            <h1>Shivank's Assignment 4!</h1>
+            <p>For this assignment, I created a circuit that reads a signal from an
+              Infrared remote and prints the digit to an seven segment display.
+             </p>
+            <p>
+            <img src="libimage.jpg" width=400></a>
+            </p>
+            <p>
+            Image of the circuit.
+            </p>
+            <p>
+            <img src="libdiagram.jpg" width=400></a>
+            </p>
+            <p>
+            Image of the schematic and calculations. I set the LED resistors to 220 Ohms
+            to keep the mA within an acceptable  of 1mA to 30mA according to the LED datasheet.
+            The LEDs on the panel are all red, so I used a 1.8 voltage drop.
+
+            </p>
+            <p>This is the code...<code><br>
+              #include <IRremote.h> // add the IR library: https://github.com/Arduino-IRremote<br>
+              #include "SevSeg.h" // add the SevSeg library: https://github.com/DeanIsMe/SevSeg<br>
+              SevSeg sevseg; // define SevSeg object. <br>
+              <br>
+              #define IR_RECEIVE_PIN 10 // define reciever pin<br>
+
+              #define IR_BUTTON_1 12 // maps the signal being read to a button<br>
+              #define IR_BUTTON_2 24 // maps the signal being read to a button<br>
+              #define IR_BUTTON_3 94 // maps the signal being read to a button<br>
+              #define IR_BUTTON_4 8 // maps the signal being read to a button<br>
+              #define IR_BUTTON_5 28 // maps the signal being read to a button<br>
+              #define IR_BUTTON_6 90 // maps the signal being read to a button<br>
+              #define IR_BUTTON_7 66 // maps the signal being read to a button<br>
+              #define IR_BUTTON_8 82 // maps the signal being read to a button<br>
+              #define IR_BUTTON_9 74 // maps the signal being read to a button<br>
+              <br>
+              void setup() {  <br>
+                byte numDigits = 1; // number of digits on the display<br>
+                byte digitPins[] = {}; // empty for a single digit display, defines ground pins for a multi-digit display.<br>
+                byte segmentPins[] = {6, 5, 2, 3, 4, 7, 8, 9}; // defines which arduino pins are connected to each segments. list is alphabetical and ends with DP<br>
+                bool resistorsOnSegments = true; // set to true when the current limiting resistor is in series with the digit display. This is the case for my schematic.<br>
+              <br>
+                byte hardwareConfig = COMMON_CATHODE; // common cathode or common anode, our case has a common cathode. <br>
+                sevseg.begin(hardwareConfig, numDigits, digitPins, segmentPins, resistorsOnSegments); // initializes sevseg object using the parameters above. <br>
+                sevseg.setBrightness(90); // set the brightness. <br>
+              <br>
+                // ------ IR ---------- // <br>
+                Serial.begin(9600); // starts Serial so we can read our results. <br>
+                IrReceiver.begin(IR_RECEIVE_PIN); // initializes the IR pin. <br>
+              }<br>
+              void loop() {<br>
+                if (IrReceiver.decode()) { // checks to see if we are receiving data<br>
+                  IrReceiver.resume(); // receive the next value <br>
+                  int command = IrReceiver.decodedIRData.command; // decodedIRData is the data structure that holds our information. .command reads the decoded command. <br>
+                  switch (command) { // reads the IR command and checks each case. <br>
+                    case IR_BUTTON_1: { // if the case matches with button 1...<br>
+                      Serial.println("Pressed on button 1"); // print out the button value on Serial. <br>
+                      sevseg.setNumber(1); // displays the number that matches with the case.<br>
+                      sevseg.refreshDisplay(); // required to continue to display the number after the void loop.<br>
+                      break;<br>
+                    }<br>
+                    case IR_BUTTON_2: { // if the case matches with button 2...<br>
+                      Serial.println("Pressed on button 2");// print out the button value on Serial. <br>
+                      sevseg.setNumber(2);// displays the number that matches with the case.<br>
+                      sevseg.refreshDisplay(); // required to continue to display the number after the void loop. <br>
+                      break;<br>
+                    }<br>
+                    case IR_BUTTON_3: { // if the case matches with button 3...<br>
+                      Serial.println("Pressed on button 3");// print out the button value on Serial. <br>
+                      sevseg.setNumber(3); // displays the number that matches with the case.<br>
+                      sevseg.refreshDisplay(); // required to continue to display the number after the void loop. <br>
+                      break;<br>
+                    }<br>
+                    case IR_BUTTON_4: { // if the case matches with button 4...<br>
+                      Serial.println("Pressed on button 4");// print out the button value on Serial. <br>
+                      sevseg.setNumber(4); // displays the number that matches with the case.<br>
+                      sevseg.refreshDisplay(); // required to continue to display the number after the void loop. <br>
+                      break;<br>
+                    }<br>
+                    case IR_BUTTON_5: { // if the case matches with button 5...<br>
+                      Serial.println("Pressed on button 5");// print out the button value on Serial. <br>
+                      sevseg.setNumber(5); // displays the number that matches with the case.<br>
+                      sevseg.refreshDisplay(); // required to continue to display the number after the void loop. <br>
+                      break;<br>
+                    }<br>
+                    case IR_BUTTON_6: { // if the case matches with button 6...<br>
+                      Serial.println("Pressed on button 6");// print out the button value on Serial. <br>
+                      sevseg.setNumber(6); // displays the number that matches with the case.<br>
+                      sevseg.refreshDisplay(); // required to continue to display the number after the void loop. <br>
+                      break;<br>
+                    }<br>
+                    case IR_BUTTON_7: { // if the case matches with button 7...<br>
+                      Serial.println("Pressed on button 7");// print out the button value on Serial. <br>
+                      sevseg.setNumber(7); // displays the number that matches with the case.<br>
+                      sevseg.refreshDisplay(); // required to continue to display the number after the void loop. <br>
+                      break;<br>
+                    }<br>
+                    case IR_BUTTON_8: { // if the case matches with button 8...<br>
+                      Serial.println("Pressed on button 8");// print out the button value on Serial. <br>
+                      sevseg.setNumber(8); // displays the number that matches with the case.<br>
+                      sevseg.refreshDisplay(); // required to continue to display the number after the void loop. <br>
+                      break;<br>
+                    }<br>
+                    case IR_BUTTON_9: { // if the case matches with button 9...<br>
+                      Serial.println("Pressed on button 9");// print out the button value on Serial. <br>
+                      sevseg.setNumber(9); // displays the number that matches with the case.<br>
+                      sevseg.refreshDisplay(); // required to continue to display the number after the void loop. <br>
+                      break;<br>
+                    }<br>
+                    default: { // if the case matches with unkown value...<br>
+                      Serial.println("Button not recognized"); // print out the button not recognized.<br>
+                      sevseg.setNumber(0); // displays zero<br>
+                      sevseg.refreshDisplay(); // required to continue to display the number after the void loop.<br>
+                    }<br>
+                  }<br>
+                }<br>
+              }<br>
+            </p>
+            <p>This is the circuit in practice!!</p>
+            <p>
+            <img src="libgif.gif" width=400></a>
+            </p>
+
+        </div>
+    </body>
+</html>
