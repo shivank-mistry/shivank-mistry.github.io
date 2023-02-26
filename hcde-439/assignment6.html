@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+        <title>Shivank's HCDE 439 Physical Computing Page!</title>
+
+        <link href="style.css" media="screen" rel="stylesheet" type="text/css" />
+
+    </head>
+    <body>
+
+        <div class="header">
+            <h1>Shivank's Assignment 6!</h1>
+            <p>For this assignment, I created a circuit and p5.js program that allows the users to paint a canvas
+              with circles usiing the joy stick. The color of the circles depends on the light level. Also, clicking on the
+              webpage and dragging up or down changes the light level of a physical LED.
+             </p>
+            <p>
+            <img src="webimage.jpg" width=400></a>
+            </p>
+            <p>
+            Image of the circuit.
+            </p>
+            <p>
+            <img src="webdiagram.jpg" width=400></a>
+            </p>
+            <p>
+            Image of the schematic and calculations. I did two calculations: The first being one to calculate the current in the LED.
+            I used 220Ohm resistor to ensure the LED stays within an acceptable current range of 1mA - 30mA as per the datasheet.I also added a
+            10K resistor to the voltage divider photoresistor schematic to have the voltage divide at an appropriate range. If the resistor was
+            too small, the changes in voltage from dark to light is less noticable because as measured, the photoresistor measures around 1K Ohms
+            in the light and 140K Ohms in the dark. I did calculations for approximate values for max light and max dark.
+            </p>
+            <p>This is the arduino code...<code><br>
+              int ledPin = 3; // define our LED pin<br>
+              <br>
+              void setup() {<br>
+                Serial.begin(9600); // initialize our serial communication<br>
+              }<br>
+              <br>
+              void loop() {<br>
+                // ------- sending data to Serial ---- // <br>
+                int s1 = analogRead(1); // define our three analogRead pins<br><br>
+                int s2 = analogRead(2);// define our three analogRead pins<br>
+                int s3 = analogRead(3);// define our three analogRead pins<br>
+                Serial.print("["); // starts our list<br>
+                Serial.print(s1); // xPos is at index 0<br>
+                Serial.print(","); // comma separator for list construction<br>
+                Serial.print(s2); // yPos is at index 1<br>
+                Serial.print(","); // comma separator for list construction<br>
+                Serial.print(s3);  // lightlevel at index 2<br>
+                Serial.println("]"); // ends our list<br>
+              <br>
+                // ----- reading data from Serial ------ //<br>
+                int brightness;<br>
+                // check if data has been sent from the computer:<br>
+                if (Serial.available() > 0) {<br>
+                  // read the most recent byte (which will be from 0 to 255):<br>
+                  brightness = Serial.read();<br>
+                  // set the brightness of the LED:<br>
+                  analogWrite(ledPin, brightness);<br>
+                }<br>
+              }<br>
+
+            </code></p>
+            <p>This is the p5.js code...<code><br>
+              var serial; // variable to hold an instance of the serialport library<br>
+              var portName = 'COM4'; //rename to the name of your port<br>
+              var dataarray = []; //some data coming in over serial!<br>
+              <br>
+              function setup() {<br>
+                serial = new p5.SerialPort();       // make a new instance of the serialport library<br>
+                serial.on('list', printList);       // set a callback function for the serialport list event<br>
+                serial.on('connected', serverConnected); // callback for connecting to the server<br>
+                serial.on('open', portOpen);        // callback for the port opening<br>
+                serial.on('data', serialEvent);     // callback for when new data arrives<br>
+                serial.on('error', serialError);    // callback for errors<br>
+                serial.on('close', portClose);      // callback for the port closing<br>
+
+                serial.list();                      // list the serial ports<br>
+                serial.open(portName);              // open a serial port<br>
+                createCanvas(1200, 800);            // sets up our canvas<br>
+                background(0x08, 0x16, 0x40);       // colors the background blue<br>
+              }<br>
+              <br>
+              // get the list of ports:<br>
+              function printList(portList) {<br>
+               // portList is an array of serial port names<br>
+               for (var i = 0; i < portList.length; i++) {<br>
+               // Display the list the console:<br>
+                 print(i + " " + portList[i]);<br>
+               }<br>
+              }<br>
+
+              function serverConnected() {<br>
+                print('connected to server.'); // message for connection<br>
+              }<br>
+              <br>
+              function portOpen() {<br>
+                print('the serial port opened.') // message for port open status<br>
+              }<br>
+              <br>
+              function serialError(err) {<br>
+                print('Something went wrong with the serial port. ' + err); // error message<br>
+              }<br>
+              <br>
+              function portClose() {<br>
+                print('The serial port closed.'); // port close message<br>
+              }<br>
+              <br>
+              function serialEvent() {<br>
+                if (serial.available()) {<br>
+                  var datastring = serial.readLine(); // reading some serial data as a string<br>
+                  var newarray; // define our array to place data in<br>
+                  try {<br>
+                    newarray = JSON.parse(datastring); // checks to see if we can parse serial<br>
+                    if (typeof newarray == 'object') { // if we can parse serial (as an object), set it as our new array<br>
+                      dataarray = newarray;<br>
+                    }<br>
+                    console.log("got back " + datastring); // prints our data to console log<br>
+                    } catch(err) {<br>
+                    // got something that's not a json<br>
+                  }<br>
+                }<br>
+              }<br>
+              <br>
+              <br>
+              function mouseDragged(){  // function that controls mouse<br>
+                bright = floor(map(mouseY, 0, height, 0, 255)); // maps scrolling from zero to height of page to 0-255<br>
+                bright = constrain(bright, 0, 255); // constrains value in case some data is out of bounds<br>
+                serial.write(bright); // write our new data to be analog read in arduino/<br>
+                console.log(bright); // write our daya to the console log.<br>
+              }<br>
+              <br>
+              <br>
+              function draw() {<br>
+                var color = map(dataarray[2], 0, 1023, 0, 255); // maps color variable from 0-1023 to 0-255.<br>
+                var x = map(dataarray[0], 0, 1023, 0, width);// maps x variable from 0-1023 to 0-255.<br>
+                var y = map(dataarray[1], 0, 1023, 0, height);// maps y variable from 0-1023 to 0-255.<br>
+                fill(color,0,255 - color,63); // fill! if it it light, color is read. If dark, color is blue -- 25% opacity<br>
+                ellipse(x, y, 100, 100); // draw an ellipse with our x and y. <br>
+              }<br>
+<br>
+            </code></p>
+            <p>This is the circuit in practice!!</p>
+            <p>
+            <img src="webgif.gif" width=400></a>
+            </p>
+
+        </div>
+    </body>
+</html>
