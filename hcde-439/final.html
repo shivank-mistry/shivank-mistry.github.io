@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="../css/materialize.min.css"  media="screen,projection"/>
+  <!--css Stylesheet-->
+  <link rel="stylesheet" href="../css/materialize.css">
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title> HCDE 439: Final Assignment </title>
+</head>
+    <body>
+      <!-- Navigation bar -->
+      <nav class="blue l6 s12">
+        <div class="container">
+          <div class="l6 s12 nav-wrapper">
+          <a href="#" class="brand-logo">Shivank Mistry</a>
+          <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="index.html">My Work</a></li>
+            <li class="active"><a href="about.html">About</a></li>
+            <li><a href="resume.html">Resume</a></li>
+          </ul>
+        </div>
+        </div>
+      </nav>
+      <!-- body -->
+      <div class="container">
+        <h3  style="font-weight : lighter; padding-bottom : 50px"> HCDE 439 Final Project: The Vibramin</h3>
+      </div>
+      <div class="container">
+        <h5>Project</h5>
+        <p>
+          For my final project, I wanted to create an instrument! My final deliverable, the Vibramin, is a mix of the theremin and the vibraphone. In the beginning of this project, I knew I wanted to build some kind
+          of touchless instrument, similar to a theremin. After exploring other people's projects, I found this to be a reasonable goal.
+          I originally began with a single ultrasonic speaker that was connected to the piezo speaker. This minimally viable product served as a
+          decent proof-of-concept, but it sounded terrible. I explored p5.js and found p5.sound. Using p5.sound's well-documented features, I incorporated my
+          MVP with p5. I then added a second ultrasonic speaker with the idea that I can control volume (amplitude). I added this, but it seemed a bit boring.
+          This is where the vibraphone element comes in. Vibraphones have fans in the bottom of them that rotate, which in turn, modulates the amplitude. The speed at which
+          these fans turn change the frequency of modulation. This is in essence what my second ultrasonic speaker does. It modulates the frequency of change in the amplitude of the sound wave.
+          The final instrument plays a scale, and has the ability to modulate the frequency of volume (amplitude).
+        <p>
+        <p   style="padding-bottom : 50px">The complete repository can be found <a href="https://github.com/shivank-mistry/ArduinoInstrument">here.</a></p>
+      </div>
+      <div class="container">
+        <h5>Overview</h5>
+        <p   style="padding-bottom : 50px">
+          At a high level, this project is quite simple. I sent data from my arduino from the two ultrasonic speakers to the web to be manipulated with p5.sound and p5.js.
+          I mainly used the p5.Oscillator feature. This feature creates a sound wave (I used a "sine" wave) that you can then change the frequency and amplitude. To get the amplitude modulation (AM) effect,
+          I added a second Oscillator, but I disconnected it so it did not make any sound. I then changed the amplitude of my first wave to equal the second wave. In amplitude modulation, the wave that makes sound
+          is the carrier wave, and the wave that modulates the amplitude is the modulator. The frequency of the modulator is dependant on the relative position of the second ultrasonic sensor. It modulates between 5-20Hz (too low for the human ear to hear!).
+          The first ultrasonic sensor controls the frequency of the carrier wave. This determines what note is being played. Finally, to tie it all together, and make it easy to play/troubleshoot, I mapped both values of the ultrasonic sensor to a graph using p5.js.
+        <p>
+      </div>
+      <div class="container">
+        <h5>Hardware</h5>
+        <p   style="padding-bottom : 50px">
+          The hardware for this project was pretty straightforward. It is two ultrasonic sensors connected to the arduino. The enclosure is a recycled granola box, some ducktape, and a rubber band.
+        <p>
+          <div class="row">
+            <div class="col s6" style="padding-bottom : 50px">
+              <img src="insideview.jpg" width = "500px" height = "auto">
+              <p>Inside view of the Vibramin.</p>
+            </div>
+            <div class="col s6">
+              <img src="topdownfinal.jpg" width = "500px" height = "auto">
+              <p>Topdown view of the Vibramin.</p>
+            </div>
+            <img src="schematic.jpg" width = "1050px" height = "auto" class="center">
+            <p>Schematic of the hardware. The tremolo sensor controls amplitude modulation and the pitch sensor controls what note is being played.</p>
+          </div>
+
+      </div>
+      <div class="container">
+        <h5>Firmware</h5>
+        <p>This is the firmware for the instrument. It mostly just maps and sends the ultrasonic sensor data to the Web over Serial. </p>
+        <p   style="padding-bottom : 50px">
+        <code>
+// constants <br>
+int echoPin = 5;<br>
+int trigPin = 3;<br>
+int trigPin2 = 10;<br>
+int echoPin2 = 9;<br>
+<br>
+// non-constant values<br>
+int distance;<br>
+int distance2; <br>
+<br>
+void setup() {<br>
+    &emsp;// put your setup code here, to run once:<br>
+    &emsp;Serial.begin(9600);<br>
+    &emsp;pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output<br>
+    &emsp;pinMode(echoPin, INPUT); // Sets the echoPin as an Input<br>
+    &emsp;pinMode(trigPin2, OUTPUT); // Sets the trigPin as an Output<br>
+    &emsp;pinMode(echoPin2, INPUT); // Sets the echoPin as an Input<br>
+}<br>
+<br>
+void loop() {<br>
+    &emsp;// -- first ultrasonic sensor --- // <br>
+    &emsp;digitalWrite(trigPin, HIGH); // send out the ultrasonic wave<br>
+    &emsp;delayMicroseconds(10); // wait 10 microseconds<br>
+    &emsp;digitalWrite(trigPin, LOW); // turn the ultrasonic wave off<br>
+    &emsp;distance = pulseIn(echoPin, HIGH);<br>
+    &emsp;distance = constrain(distance, 100, 1100); // map distance between 100-1100.<br>
+<br>
+<br>
+    &emsp;// -- second ultrasonic sensor --- // <br>
+    &emsp;digitalWrite(trigPin2, HIGH); // send out the ultrasonic wave<br>
+    &emsp;delayMicroseconds(10); // wait 10 microseconds<br>
+    &emsp;digitalWrite(trigPin2, LOW); // turn the ultrasonic wave off<br>
+    &emsp;distance2 = pulseIn(echoPin2, HIGH);<br>
+    &emsp;distance2 = constrain(distance2, 100, 1100); // map distance between 100-1100.<br>
+<br>
+<br>
+    &emsp;// store data into constructed array and sent to serial. <br>
+    &emsp;Serial.print("[");<br>
+  &emsp;  Serial.print(distance);<br>
+    &emsp;Serial.print(",");<br>
+    &emsp;Serial.print(distance2);<br>
+    &emsp;Serial.println("]");<br>
+    &emsp;delay(10);<br>
+}<br>
+        </code>
+        </p>
+      </div>
+      <div class="container">
+        <h5>Web-based Code</h5>
+        <p>This is where most of the functionality comes in. This code uses the data from Arduino to make the sound waves. It also
+         creates the graphs that help to visualize what is happening as the user plays the instument.</p>
+        <p   style="padding-bottom : 50px">
+        <code>
+          var serial; // variable to hold an instance of the serialport library<br>
+          var portName = 'COM4'; //rename to the name of your port<br>
+          var dataarray = []; //some data coming in over serial!<br>
+          var xPos = 0;<br>
+          let playing, freq, osc, mod, freq2<br>
+<br>
+<br>
+          function setup() {<br>
+            &emsp;serial = new p5.SerialPort();       // make a new instance of the serialport library<br>
+            &emsp;serial.on('list', printList);       // set a callback function for the serialport list event<br>
+            &emsp;serial.on('connected', serverConnected); // callback for connecting to the server<br>
+            &emsp;serial.on('open', portOpen);        // callback for the port opening<br>
+            &emsp;serial.on('data', serialEvent);     // callback for when new data arrives<br>
+            &emsp;serial.on('error', serialError);    // callback for errors<br>
+            &emsp;serial.on('close', portClose);      // callback for the port closing<br>
+<br>
+            &emsp;serial.list();                      // list the serial ports<br>
+            &emsp;serial.open(portName);              // open a serial port<br>
+
+
+            &emsp;let cnv = createCanvas(screen.width, screen.height); // canvas size is screen size.<br>
+            &emsp;cnv.mousePressed(playOscillator); // when mouse is pressed on screen, it starts the oscillators.<br>
+            &emsp;osc = new p5.Oscillator('sine'); // intialize carrier<br>
+            &emsp;mod = new p5.Oscillator('sine'); // initialize modulator<br>
+            &emsp;background(0);<br>
+          }<br>
+<br>
+<br>
+          // get the list of ports:<br>
+          function printList(portList) {<br>
+           &emsp;// portList is an array of serial port names<br>
+           &emsp;for (var i = 0; i < portList.length; i++) {<br>
+           &emsp;// Display the list the console:<br>
+             &emsp;&emsp;print(i + " " + portList[i]);<br>
+           &emsp;}<br>
+          }<br>
+<br>
+          function serverConnected() {<br>
+            &emsp;print('connected to server.');<br>
+          }<br>
+<br>
+          function portOpen() {<br>
+            &emsp;print('the serial port opened.');<br>
+          }<br>
+<br>
+          function serialError(err) {<br>
+            &emsp;print('Something went wrong with the serial port. ' + err);<br>
+          }<br>
+<br>
+          function portClose() {<br>
+            &emsp;print('The serial port closed.');<br>
+          }<br>
+<br>
+          function serialEvent() {<br>
+            &emsp;if (serial.available()) {<br>
+              &emsp;&emsp;var datastring = serial.readLine(); // readin some serial<br>
+              &emsp;&emsp;var newarray;<br>
+              &emsp;&emsp;try {<br>
+                &emsp;&emsp;&emsp;newarray = JSON.parse(datastring); // can we parse the serial<br>
+                &emsp;&emsp;&emsp;if (typeof newarray == 'object') {<br>
+                  &emsp;&emsp;&emsp;&emsp;dataarray = newarray;<br>
+                &emsp;&emsp;&emsp;}<br>
+                &emsp;&emsp;&emsp;console.log("got back " + datastring);<br>
+                &emsp;&emsp;&emsp;} catch(err) {<br>
+                &emsp;&emsp;&emsp;&emsp;// got something that's not a json<br>
+              &emsp;&emsp;}<br>
+            &emsp;}<br>
+          }<br>
+
+          function graphData(newData) {<br>
+            &emsp;// map the range of the input to the window height:<br>
+            &emsp;var yPos = map(newData, 0, 1023, 0, height);<br>
+            &emsp;// draw the line<br>
+            &emsp;line(xPos, height, xPos, height - yPos);<br>
+            &emsp;// at the edge of the screen, go back to the beginning:<br>
+            &emsp;if (xPos >= width) {<br>
+              &emsp;&emsp;xPos = 0;<br>
+              &emsp;&emsp;// clear the screen by resetting the background:<br>
+              &emsp;&emsp;background(0);<br>
+            &emsp;} else {<br>
+              &emsp;&emsp;// pass<br>
+            &emsp;}<br>
+          }<br>
+<br>
+          function draw() {<br>
+            &emsp;stroke('rgba(255,255,0,0.8)'); // yellow<br>
+            &emsp;graphData(dataarray[0]);<br>
+            &emsp;stroke('rgba(0,0,255,0.8)'); // blue<br>
+            &emsp;graphData(dataarray[1]);<br>
+            &emsp;xPos++;<br>
+<br>
+<br>
+            &emsp;freq = map(dataarray[0], 100, 1100, 1, 8); // maps frequency from 1-8 as I need 8 notes in the scale.<br>
+            &emsp;freq2 = map(dataarray[1], 100, 1100, 5, 20); // maps frequency from 5-20 hz for the modulator wave.<br>
+            &emsp;freq = Math.round(freq); // rounds to nearest whole number<br>
+<br>
+            &emsp;if (playing) {<br>
+            &emsp;&emsp;  mod.amp(1); // sets amplitude to 1, the highest.<br>
+            &emsp;&emsp;  mod.freq(freq2); // sets the frequency of the modulator to equal sensor value mapped from 5-20<br>
+            &emsp;&emsp;  osc.amp(mod); // this is the fun! maps the amp of carrier to the entire modulator wave<br>
+<br>
+            &emsp;&emsp;  // MIDI frequencies for bFlat Blues: 58, 61, 63, 64, 65, 68, 70<br>
+            &emsp;&emsp;  // MIDI frequencies for bFlat Raga Lalit Scale: 58, 59, 62, 63, 64, 66, 69. 70<br>
+<br>
+<br>
+            &emsp;&emsp;  // this switch case matches the 8 notes in the scale to midi numbers corresponding<br>
+            &emsp;&emsp;  // to notes in the scale. midiToFreq() is a helpful function that converts the midi notation to<br>
+            &emsp;&emsp;  // exact frequency of the note.<br>
+              &emsp;&emsp;switch (freq) {<br>
+                &emsp;&emsp;&emsp;case 1:<br>
+                &emsp;&emsp;&emsp;&emsp;  osc.freq(midiToFreq(58));<br>
+                &emsp;&emsp;&emsp;&emsp;  break;<br>
+                &emsp;&emsp;&emsp;case 2:<br>
+                &emsp;&emsp;&emsp;&emsp;  osc.freq(midiToFreq(59));<br>
+                &emsp;&emsp;&emsp;&emsp;  break;<br>
+                &emsp;&emsp;&emsp; case 3:<br>
+                &emsp;&emsp;&emsp;&emsp;  osc.freq(midiToFreq(62));<br>
+                &emsp;&emsp;&emsp;&emsp;  break;<br>
+                &emsp;&emsp;&emsp;case 4:<br>
+                &emsp;&emsp;&emsp;&emsp;  osc.freq(midiToFreq(63));<br>
+                &emsp;&emsp;&emsp;&emsp;  break;<br>
+              &emsp;&emsp;&emsp;  case 5:<br>
+              &emsp;&emsp;&emsp;&emsp;    osc.freq(midiToFreq(64));<br>
+              &emsp;&emsp;&emsp;&emsp;    break;<br>
+              &emsp;&emsp;&emsp;  case 6:<br>
+              &emsp;&emsp;&emsp;&emsp;    osc.freq(midiToFreq(66));<br>
+              &emsp;&emsp;&emsp;&emsp;    break;<br>
+              &emsp;&emsp;&emsp;  case 7:<br>
+              &emsp;&emsp;&emsp;&emsp;    osc.freq(midiToFreq(69));<br>
+              &emsp;&emsp;&emsp;&emsp;    break;<br>
+              &emsp;&emsp;&emsp;  case 8:<br>
+              &emsp;&emsp;&emsp;&emsp;    osc.freq(midiToFreq(70));<br>
+              &emsp;&emsp;&emsp;&emsp;    break;<br>
+              &emsp;&emsp;}<br>
+            &emsp;}<br>
+          }<br>
+
+          function playOscillator() {<br>
+            &emsp;// starting an oscillator on a user gesture will enable audio<br>
+            &emsp;// in browsers that have a strict autoplay policy like Chrome (my primary browser)<br>
+          &emsp;  mod.disconnect(); // turns off the modulator wave so it doesn't make noise.<br>
+          &emsp;  osc.start(); // start carrier<br>
+          &emsp;  mod.start(); // start modulator<br>
+          &emsp;  playing = true; // starts playing!<br>
+          }<br>
+<br>
+        </code>
+      </p>
+      </div>
+      <div class="container">
+        <h5>Demo</h5>
+        <p>Here is the demo video! </p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/K87UwIrIYxY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+      <div class="container">
+        <h5>Future Improvements</h5>
+        <p   style="padding-bottom : 50px">
+          Overall, I had a lot of fun with this project! Next steps for me would be to explore more of p5.sound. I would like to create a drum track to accompany the
+          instrument in p5. Also, I used a scale commonly used in indian classical music. North Indian classical music often has a drone instrument called the <a href="https://youtu.be/rVeFX4O4zT0">Tambura</a>
+          that provides an accompanied harmonic drone that fits into the scale that the soloist is playing in (usually this soloist is a vocalist, sitar, flautist, or other traditional indian instrument).
+          I think adding some kind of harmonic drone would be really interesting
+          to see how it plays out with my instrument. I really enjoyed exploring p5.sound and could see myself trying to create fun beats and instruments with it in the future.
+        </p>
+      </div>
+      <!-- Footer -->
+      <footer class="page-footer blue">
+        <div class="container">
+            <div class="col l6 s12">
+              <h5 class="white-text">Socials</h5>
+              <ul>
+                <li><a href="https://www.linkedin.com/in/shivank-mistry">Linkedin</a></li>
+                <li><a href="mailto:shivank.mistry@gmail.com">Email</a></li>
+                <li><a href="https://github.com/shivank-mistry">Github</a></li>
+              </ul>
+            </div>
+            <p>Made using <a href="https://materializecss.com/">Materialize CSS.</a> ©2023 Shivank Mistry. All Rights Reserved.</p>
+        </div>
+        <div class="container">
+          <hr color="white" width="1200px" size="10px" align="center">
+        </div>
+    </footer>
+    </body>
+</html>
