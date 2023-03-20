@@ -26,10 +26,11 @@
       </nav>
       <!-- body -->
       <div class="container">
-        <h3  style="font-weight : lighter; padding-bottom : 50px"> HCDE 439 Final Project: The Vibramin</h3>
+        <h3> HCDE 439 Final Project: The Vibramin</h3>
+        <h5 style="font-weight : lighter; padding-bottom : 50px">A study in physical computing.</h5>
       </div>
       <div class="container">
-        <h5>Project</h5>
+        <h4>Project</h4>
         <p>
           For my final project, I wanted to create an instrument! My final deliverable, the Vibramin, is a mix of the theremin and the vibraphone. In the beginning of this project, I knew I wanted to build some kind
           of touchless instrument, similar to a theremin. After exploring other people's projects, I found this to be a reasonable goal.
@@ -43,7 +44,7 @@
         <p   style="padding-bottom : 50px">The complete repository can be found <a href="https://github.com/shivank-mistry/ArduinoInstrument">here.</a></p>
       </div>
       <div class="container">
-        <h5>Overview</h5>
+        <h4>Overview</h4>
         <p   style="padding-bottom : 50px">
           At a high level, this project is quite simple. I sent data from my arduino from the two ultrasonic speakers to the web to be manipulated with p5.sound and p5.js.
           I mainly used the p5.Oscillator feature. This feature creates a sound wave (I used a "sine" wave) that you can then change the frequency and amplitude. To get the amplitude modulation (AM) effect,
@@ -53,7 +54,7 @@
         <p>
       </div>
       <div class="container">
-        <h5>Hardware</h5>
+        <h4>Hardware</h4>
         <p   style="padding-bottom : 50px">
           The hardware for this project was pretty straightforward. It is two ultrasonic sensors connected to the arduino. The enclosure is a recycled granola box, some ducktape, and a rubber band.
         <p>
@@ -72,7 +73,7 @@
 
       </div>
       <div class="container">
-        <h5>Firmware</h5>
+        <h4>Firmware</h4>
         <p>This is the firmware for the instrument. It mostly just maps and sends the ultrasonic sensor data to the Web over Serial. </p>
         <p   style="padding-bottom : 50px">
         <code>
@@ -124,7 +125,7 @@ void loop() {<br>
         </p>
       </div>
       <div class="container">
-        <h5>Web-based Code</h5>
+        <h4>Web-based Code</h4>
         <p>This is where most of the functionality comes in. This code uses the data from Arduino to make the sound waves. It also
          creates the graphs that help to visualize what is happening as the user plays the instument.</p>
         <p   style="padding-bottom : 50px">
@@ -279,7 +280,7 @@ void loop() {<br>
       </p>
       </div>
       <div class="container">
-        <h5>Demo</h5>
+        <h4>Demo</h4>
         <p>Here is the demo video! </p>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/K87UwIrIYxY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
       </div>
